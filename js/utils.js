@@ -6,6 +6,9 @@ var log = console.log.bind(console)
 
 //创建一个图片地址
 var imageFrompath = function(path) {
+	var prefixImg = 'img/'
+	path = prefixImg + path
+//	log(1111, prefixImg)
     var img = new Image()
     img.src = path
     return img
