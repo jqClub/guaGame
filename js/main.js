@@ -5,7 +5,7 @@ var Paddle = function() {
 	var o = {
 		image: image,
 		x: 100,
-		y: 200,
+		y: 250,
 		speed: 10,
 	}
 	
@@ -21,6 +21,27 @@ var Paddle = function() {
 //	o.draw = function(context) {
 //		context.drawImage(this.image, this.x, this.y)
 //	}
+
+
+	
+	o.collide = function(ball) {
+		if(ball.y + ball.image.height > o.y) {
+			if(ball.x > o.x && ball.x < o.image.width + o.x) {
+				return true
+			}
+		}
+		return false
+		
+//		if(ball.x > o.x && ball.x < o.x + image.width) {
+//			ball.speedX *= -1
+//		}
+//		if(ball.y > o.y && ball.y < o.y + image.height) {
+//			ball.speedY *= -1
+//		}
+//		if(ball.y > o.y) {
+//			ball.speedY *= -1
+//		}
+	}
 	return o
 }
 
@@ -62,7 +83,6 @@ var GuaGame = function() {
 			}
 		}
 		
-		
 		g.update()
 		g.clear()
 		g.draw()
@@ -81,13 +101,50 @@ var GuaGame = function() {
 ////		paddle.draw(context)
 //		context.drawImage(paddle.image, paddle.x, paddle.y)
 	}, 1000/30)
+	
+	g.drawImage = function(paddle) {
+		g.context.drawImage(paddle.image, paddle.x, paddle.y)
+	}
 	return g
+}
+
+
+var Ball = function() {
+	//這里是画图的地址信息
+	var image = imageFrompath('ball.png')
+	var o = {
+		image: image,
+		x: 0,
+		y: 0,
+		speedX: 10,
+		speedY: 10,
+		startBall: false,
+	}
+	o.move = function() {
+		if(!o.startBall) {
+			return
+		}
+		log('move')
+		if(o.x < 0 || o.x > 400) {
+			o.speedX *= -1
+		}
+		if(o.y < 0 || o.y > 300) {
+			o.speedY *= -1
+		}
+		o.x += o.speedX
+		o.y += o.speedY
+	}
+	o.start = function() {
+		o.startBall = true
+	}
+	return o
 }
 	
 //入口函数
 var __main = function() {
 	var paddle = Paddle()
 	var guaGame = GuaGame()
+	var ball = Ball()  //球的状态
 
 //	var canvas = e('#id-canvas')
 //	var context = canvas.getContext('2d')
@@ -114,13 +171,17 @@ var __main = function() {
 	var rightDown = false
 	
 	guaGame.registerEvent('a', function() {
-		log(11111111111111, guaGame)
+//		log(11111111111111, guaGame)
 		paddle.moveLeft()
 	})
 	guaGame.registerEvent('d', function() {
-		log(11111111111111, guaGame)
+//		log(11111111111111, guaGame)
 		paddle.moveRight()
-//		rightDown = true
+	})
+	
+	guaGame.registerEvent('f', function() {
+//		log(11111111111111, guaGame)
+		ball.start()
 	})
 	
 //	按钮按下
@@ -149,6 +210,15 @@ var __main = function() {
 //			paddle.moveRight()
 ////			paddle.x -= paddle.speed
 //		}
+		ball.move()
+		
+		//判断相撞
+//		paddle.collide(ball)
+		if(paddle.collide(ball)) {
+			log('相撞了')
+			//相撞了
+			ball.speedY *= -1
+		}
 	}
 
 
@@ -159,7 +229,11 @@ var __main = function() {
 
 	guaGame.draw = function() {
 		///画布
-		context.drawImage(paddle.image, paddle.x, paddle.y)
+//		context.drawImage(paddle.image, paddle.x, paddle.y)
+		
+		guaGame.drawImage(paddle)
+		
+		guaGame.drawImage(ball)
 	}
 	
 	//定时器去更新数据
