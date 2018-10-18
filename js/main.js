@@ -8,6 +8,13 @@ var Paddle = function() {
 		y: 200,
 		speed: 10,
 	}
+	//新增2个paddle的方法
+	o.moveLeft = function() {
+		this.x += this.speed
+	}
+	o.moveRight = function() {
+		this.x -= this.speed
+	}
 	return o
 }
 
@@ -68,7 +75,7 @@ var __main = function() {
 		//先清空
 		context.clearRect(0, 0, canvas.width, canvas.height) 
 		//再重新画挡板
-		context.drawImage(paddle.image, paddle.x, paddle.x)
+		context.drawImage(paddle.image, paddle.x, paddle.y)
 	}, 1000/30)
 	
 //	按钮按下
