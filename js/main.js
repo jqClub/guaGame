@@ -31,14 +31,38 @@ var GuaGame = function() {
 	var canvas = e('#id-canvas')
 	var context = canvas.getContext('2d')
 	
-	var o = {
+	var g = {
 		canvas: canvas,
 		context: context,
+		actions: {},
+		keydowns: {},
 	}
-	var g = o
+	document.addEventListener('keydown', function(event) {
+		log('按钮按下')
+		log('event', event)
+		var key = event.key
+		g.keydowns[key] = true
+	})
+	document.addEventListener('keyup', function(event) {
+		log('按钮按起')
+		log('event', event)
+		var key = event.key
+		g.keydowns[key] = false
+	})
+	
+	g.registerEvent = function(key, callBack) {
+		g.actions[key] = callBack
+	}
 	
 	//定时器去更新数据
 	setInterval(function() {
+		for(var key in g.actions) {
+			if(g.keydowns[key]) {
+				g.actions[key]()
+			}
+		}
+		
+		
 		g.update()
 		g.clear()
 		g.draw()
@@ -57,7 +81,7 @@ var GuaGame = function() {
 ////		paddle.draw(context)
 //		context.drawImage(paddle.image, paddle.x, paddle.y)
 	}, 1000/30)
-	return o
+	return g
 }
 	
 //入口函数
@@ -86,40 +110,51 @@ var __main = function() {
 	
 	
 ////监听按键的改变
-//	var leftDown = false
-//	var rightDown = false
-//	按钮按下
-	document.addEventListener('keydown', function(event) {
-		log('按钮按下')
-		log('event', event)
-		var key = event.key
-		//再去重新画图
-		if(key == 'a') {
-			leftDown = true
-//			x -= 10
-//			drawImg(false)
-		} else if(key == 'd'){
-			rightDown = true
-//			x += 10
-//			drawImg(true)
-		}
+	var leftDown = false
+	var rightDown = false
+	
+	guaGame.registerEvent('a', function() {
+		log(11111111111111, guaGame)
+		paddle.moveLeft()
 	})
+	guaGame.registerEvent('d', function() {
+		log(11111111111111, guaGame)
+		paddle.moveRight()
+//		rightDown = true
+	})
+	
+//	按钮按下
+//	document.addEventListener('keydown', function(event) {
+//		log('按钮按下')
+//		log('event', event)
+//		var key = event.key
+//		//再去重新画图
+//		if(key == 'a') {
+//			leftDown = true
+////			x -= 10
+////			drawImg(false)
+//		} else if(key == 'd'){
+//			rightDown = true
+////			x += 10
+////			drawImg(true)
+//		}
+//	})
 
 	guaGame.update = function() {
 		//更新x,y的值
-			if(leftDown) {
-				paddle.moveLeft()
-	//			paddle.x += paddle.speed
-			} else if(rightDown) {
-				paddle.moveRight()
-	//			paddle.x -= paddle.speed
-			}
+//		if(leftDown) {
+//			paddle.moveLeft()
+////			paddle.x += paddle.speed
+//		} else if(rightDown) {
+//			paddle.moveRight()
+////			paddle.x -= paddle.speed
+//		}
 	}
 
 
 	guaGame.clear = function() {
 		///先清空
-			context.clearRect(0, 0, canvas.width, canvas.height) 
+		context.clearRect(0, 0, canvas.width, canvas.height) 
 	}
 
 	guaGame.draw = function() {
@@ -146,18 +181,18 @@ var __main = function() {
 //	}, 1000/30)
 	
 //	按钮按下
-	document.addEventListener('keyup', function(event) {
-		log('按钮按下')
-		log('event', event)
-		var key = event.key
-		//再去重新画图
-		if(key == 'a') {
-			leftDown = false
-		} else if(key == 'd'){
-			rightDown = false
-		}
-		
-	})
+//	document.addEventListener('keyup', function(event) {
+//		log('按钮按下')
+//		log('event', event)
+//		var key = event.key
+//		//再去重新画图
+//		if(key == 'a') {
+//			leftDown = false
+//		} else if(key == 'd'){
+//			rightDown = false
+//		}
+//		
+//	})
 }
 __main()
 
