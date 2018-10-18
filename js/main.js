@@ -8,23 +8,68 @@ var Paddle = function() {
 		y: 200,
 		speed: 10,
 	}
+	
+	var paddle = o
+	
 	//新增2个paddle的方法
 	o.moveLeft = function() {
-		this.x += this.speed
+		paddle.x += paddle.speed
 	}
 	o.moveRight = function() {
-		this.x -= this.speed
+		paddle.x -= paddle.speed
 	}
+//	o.draw = function(context) {
+//		context.drawImage(this.image, this.x, this.y)
+//	}
 	return o
 }
 
+//写一个对象
+var GuaGame = function() {
+	var that = this
+	//把canvas和context，以及更新画布的方法拿出去
+	var canvas = e('#id-canvas')
+	var context = canvas.getContext('2d')
+	
+	var o = {
+		canvas: canvas,
+		context: context,
+	}
+	var g = o
+	
+	//定时器去更新数据
+	setInterval(function() {
+		g.update()
+		g.clear()
+		g.draw()
+//		//更新x,y的值
+//		if(leftDown) {
+//			paddle.moveLeft()
+////			paddle.x += paddle.speed
+//		} else if(rightDown) {
+//			paddle.moveRight()
+////			paddle.x -= paddle.speed
+//		}
+//		log(x)
+		//先清空
+//		context.clearRect(0, 0, canvas.width, canvas.height) 
+//		//再重新画挡板
+////		paddle.draw(context)
+//		context.drawImage(paddle.image, paddle.x, paddle.y)
+	}, 1000/30)
+	return o
+}
+	
 //入口函数
 var __main = function() {
 	var paddle = Paddle()
-	
-	var canvas = e('#id-canvas')
-	var context = canvas.getContext('2d')
-	log('canvas画布', canvas)
+	var guaGame = GuaGame()
+
+//	var canvas = e('#id-canvas')
+//	var context = canvas.getContext('2d')
+//	log('canvas画布', canvas)
+	var canvas = guaGame.canvas
+	var context = guaGame.context
 	
 //	var x = 100
 //	var y = 150
@@ -40,9 +85,9 @@ var __main = function() {
 //	}
 	
 	
-//监听按键的改变
-	var leftDown = false
-	var rightDown = false
+////监听按键的改变
+//	var leftDown = false
+//	var rightDown = false
 //	按钮按下
 	document.addEventListener('keydown', function(event) {
 		log('按钮按下')
@@ -58,25 +103,47 @@ var __main = function() {
 //			x += 10
 //			drawImg(true)
 		}
-		
 	})
+
+	guaGame.update = function() {
+		//更新x,y的值
+			if(leftDown) {
+				paddle.moveLeft()
+	//			paddle.x += paddle.speed
+			} else if(rightDown) {
+				paddle.moveRight()
+	//			paddle.x -= paddle.speed
+			}
+	}
+
+
+	guaGame.clear = function() {
+		///先清空
+			context.clearRect(0, 0, canvas.width, canvas.height) 
+	}
+
+	guaGame.draw = function() {
+		///画布
+		context.drawImage(paddle.image, paddle.x, paddle.y)
+	}
 	
 	//定时器去更新数据
-	setInterval(function() {
-		//更新x,y的值
-		if(leftDown) {
-			paddle.moveLeft()
-//			paddle.x += paddle.speed
-		} else if(rightDown) {
-			paddle.moveRight()
-//			paddle.x -= paddle.speed
-		}
-//		log(x)
-		//先清空
-		context.clearRect(0, 0, canvas.width, canvas.height) 
-		//再重新画挡板
-		context.drawImage(paddle.image, paddle.x, paddle.y)
-	}, 1000/30)
+//	setInterval(function() {
+//		//更新x,y的值
+//		if(leftDown) {
+//			paddle.moveLeft()
+////			paddle.x += paddle.speed
+//		} else if(rightDown) {
+//			paddle.moveRight()
+////			paddle.x -= paddle.speed
+//		}
+////		log(x)
+//		//先清空
+//		context.clearRect(0, 0, canvas.width, canvas.height) 
+//		//再重新画挡板
+//		paddle.draw(context)
+////		context.drawImage(paddle.image, paddle.x, paddle.y)
+//	}, 1000/30)
 	
 //	按钮按下
 	document.addEventListener('keyup', function(event) {
